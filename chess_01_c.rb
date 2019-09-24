@@ -1,5 +1,8 @@
 use_bpm 60
 
+##| load bass sample
+bass = "/Users/joelamb/Documents/SonicPi/chess-sonification/immortal-game/samples/double-bass-c-2.wav"
+
 ##| set note durations based on value of pieces
 P = 0.125
 N = 0.25
@@ -62,7 +65,15 @@ define :bassline do | moves, ratio = 0.9|
   moves.each_with_index do |item,index|
     p, n = item
     n = transpose(n)
-    play_pattern_timed chord(n-24, :m7).mirror.shuffle, [0.25] if index % 4 == 0
+    r = chord(n-24, :m7).mirror.shuffle
+    if index % 4 == 0
+      r.each do |n|
+        puts n
+        sample bass, rpitch: n-36, start: 0.05, finish: 0.2, lpf: 70, amp: 2
+        play n
+        sleep 0.25
+      end
+    end
   end
 end
 
